@@ -146,13 +146,8 @@ async def get_actor(actor):
     columnas = ['cast_name',
                 'cast_name_2',
                 'cast_name_3',
-                'cast_name_4',
-                'cast_name_5',
-                'cast_name_6',
-                'cast_name_7',
-                'cast_name_8',
-                'cast_name_9',
-                'cast_name_10'] 
+                'cast_name_4'
+                ] 
         
     try:
         # Buscar la película por título
@@ -308,36 +303,13 @@ data = pd.merge(peliculas, creditos, on ='id')
 # Elimino las columnas que no usaré en el modelo de recomendación
 columnas_eliminar = ('budget','release_date',
                                     'revenue',
-                                    'runtime', 
-                                    'status',
-                                    'tagline',
                                     'vote_count', 
-                                    'belongs_to_collection_id',
-                                    'belongs_to_collection_name', 
-                                    'spoken_languages_1_iso',
-                                    'spoken_languaje_1_name', 
-                                    'production_companies_1_name',
-                                    'production_companies_1_id', 
-                                    'production_companies_2_name',
-                                    'production_companies_2_id', 
-                                    'production_countries_1_iso',
-                                    'production_countries_1_name', 
-                                    'genres_1_id',
-                                    'genres_2_id', 
-                                    'genres_2_name', 
-                                    'genres_3_id', 
-                                    'genres_3_name',
                                     'return', 
                                     'retorno_US',
                                     'cast_name_2',
                                     'cast_name_3', 
-                                    'cast_name_4', 
-                                    'cast_name_5', 
-                                    'cast_name_6',
-                                    'cast_name_7', 
-                                    'cast_name_8', 
-                                    'cast_name_9', 
-                                    'cast_name_10')
+                                    'cast_name_4'
+                                    )
 for i in columnas_eliminar:
     data_filtrada = data.drop(i, axis=1)
 
@@ -380,13 +352,6 @@ matrix_total = np.hstack((tfidf_matrix.toarray(), data_filtrada[['popularity', '
 tfidf_array = tfidf_matrix.toarray()
 numeric_data = data_filtrada[['popularity', 'release_year']].values
 
-# Creo una matriz total uniendo las características categóricas más las numéricas sin usar numpy
-#matrix_total = [list(tfidf_array[i]) + list(numeric_data[i]) for i in range(len(tfidf_array))]
-
-# Convierto la lista de listas a un DataFrame para facilitar su uso posterior
-#matrix_total = pd.DataFrame(matrix_total)
-
-
 # Consulta Votos por Título:
 
 #Decorador_
@@ -405,7 +370,6 @@ async def recomendacion(titulo: str):
 
         if not idx:
             raise HTTPException(status_code=404, detail="Película no encontrada")
-
 
         #Calcula la matrix de similitud
         similarity_matrix = cosine_similarity(matrix_total, matrix_total)
