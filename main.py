@@ -17,8 +17,8 @@ app = FastAPI()
 # Función que carga los datos desde un archivo Parquet
 def cargar_datos():
     # Ajusta la ruta al archivo Parquet
-    df = pd.read_parquet('./Datasets/data_movies.parquet')
-    df_credits = pd.read_parquet('./Datasets/data_credits.parquet')
+    df = pd.read_parquet('../Datasets/data_movies.parquet',engine='fastparquet')
+    df_credits = pd.read_parquet('../Datasets/data_credits.parquet', engine='fastparquet')
     return df, df_credits
 
 #Cargo los Datos
