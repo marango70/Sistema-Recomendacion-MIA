@@ -7,16 +7,12 @@ warnings.filterwarnings('ignore')
 import datetime as dt
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics.pairwise import cosine_similarity
 
 #Instancio la App de FastAPI
 app = FastAPI()
 
 # Función que carga los datos desde un archivo Parquet
 def cargar_datos():
-    # Ajusta la ruta al archivo Parquet
     df = pd.read_parquet('data_movies.parquet',engine='fastparquet')
     df_credits = pd.read_parquet('data_credits.parquet', engine='fastparquet')
     return df, df_credits
@@ -295,107 +291,6 @@ async def votos_titulo(titulo_filmacion: str):
         "votos_promedio": prom_votos
     }
 
-## SISTEMA DE RECOMENDACION ##
-
-# Uno los dos datasets cruzando por id
-data = pd.merge(peliculas, creditos, on ='id')
-
-# Elimino las columnas que no usaré en el modelo de recomendación
-columnas_eliminar = ('budget','release_date',
-                                    'revenue',
-                                    'vote_count', 
-                                    'return', 
-                                    'retorno_US',
-                                    'cast_name_2',
-                                    'cast_name_3', 
-                                    'cast_name_4'
-                                    )
-for i in columnas_eliminar:
-    data_filtrada = data.drop(i, axis=1)
-
-#Filtro la data para que tome solo las peliculas lanzadas despues del 2000, bajando el peso de la misma en un 50% aprox
-data_filtrada = data[data['release_year'] > 2000] 
-
-#Preprocesamiento de los datos: 
-#Caracteristicas categóricas seleccionadas
-
-features = ['overview',
-            'cast_name',
-            'original_language',
-            'genres_1_name', 
-            'director'
-            ]
-
-# Llenado de valores nulos a las características categóricas
-for feature in features:
-    if data_filtrada[feature].dtype == 'object':
-        data_filtrada[feature] = data[feature].fillna('')
-
-# Creo una columna con los strigs combinados (texto_total): Tomo solo algunos
-
-data_filtrada['texto_combinado'] = data_filtrada['overview'] + ' ' + data_filtrada['genres_1_name']  + ' ' + data_filtrada['cast_name'] + ' ' + data_filtrada['director'] + ' ' + data_filtrada['original_language']
-
-#  vectorizo la información de texto
-tfidf = TfidfVectorizer(stop_words='english')    #Instancio
-tfidf_matrix = tfidf.fit_transform(data_filtrada['texto_combinado'])  #vectorizo
-
-# Estandarizo los datos numericos a usar:
-scaler = StandardScaler()  #Instancio 
-data_filtrada[['popularity','release_year']] = scaler.fit_transform(data_filtrada[['popularity', 'release_year']]) #escalo
-
-#Creo una matrix total uniendo las catacteristicas categóricas más las numéricas.
-import numpy as np
-
-matrix_total = np.hstack((tfidf_matrix.toarray(), data_filtrada[['popularity', 'release_year']].values))
-
-# Convierto tfidf_matrix a array y obtengo los valores de las columnas numéricas
-tfidf_array = tfidf_matrix.toarray()
-numeric_data = data_filtrada[['popularity', 'release_year']].values
-
-# Consulta Votos por Título:
-
-#Decorador_
-@app.get("/recomendacion")
-
-#Consulta
-async def recomendacion(titulo: str):
-
-    try:
-
-        idx = data_filtrada.index[data_filtrada['title']==titulo].to_list()[0]
-        
-        print('Titulo de la Película',titulo)  # Log de depuración
-        print('indice',idx)  # Log de depuración
-        print(type(idx))
-
-        if not idx:
-            raise HTTPException(status_code=404, detail="Película no encontrada")
-
-        #Calcula la matrix de similitud
-        similarity_matrix = cosine_similarity(matrix_total, matrix_total)
-        print('Matriz de similaridad') #Lod de depuración
-
-        #obtengo los paresde peliculas indice y score
-        similarity_score = list(enumerate(similarity_matrix[idx]))
-        print('scores') #Lod de depuración
-        
-        #Ordeno las peliculas por puntaje de similitud
-        similarity_score = sorted(similarity_score, key=lambda x: x[1], reverse=True)
-        print('lista de scores') #Lod de depuración
-        
-        #Tomo los indices de las 5 peliculas similares. quito la primera [0] que es la misma dada
-        similar_movies_indices= [i[0] for i in similarity_score[1:6]]
-
-        recomendadas = data_filtrada['title'].iloc[similar_movies_indices].tolist()
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error interno: {str(e)}")
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error interno: {str(e)}")
-
-    return {'Recomendaciones': recomendadas}
-
-
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")
@@ -403,9 +298,9 @@ if __name__ == "__main__":
 # http://127.0.0.1:8000/cantidad_filmaciones_mes?mes=febrero
 # http://127.0.0.1:8000/cantidad_filmaciones_dia?dia=lunes
 # http://127.0.0.1:8000/score_titulo?titulo_de_la_filmacion=jumanji
-# http://127.0.0.1:8000/get_actor?actor=robin williams
+# http://127.0.0.1:8000/get_actor?actor=robin%20williams
 # http://127.0.0.1:8000/get_director?director=forest%20whitaker
-# http://127.0.0.1:8000/votos_titulo?titulo_filmacion=Toys%20Story
-# http://127.0.0.1:8000/recomendacion?titulo=two%20friends
+# http://127.0.0.1:8000/votos_titulo?titulo_filmacion=mom
+
 
 # uvicorn main:app --reload --port 8000
