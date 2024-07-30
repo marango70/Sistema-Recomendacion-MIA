@@ -73,7 +73,25 @@ Se realiza un análisis gráfico y de las características de los datos de los d
 **i** Se grafican algunas variables que son cadenas de texto en formato Nube de palabras. </p>
 
 **3. Desarrollo Consultas:** </p>
-Para desarrollar las consultas se realizó directamente en el archivo **`main.py`**  con apoyo en el notebook. </p> 
+Para desarrollar las consultas se realizó directamente en el archivo **`main.py`**. Las consultas desarrolladas fueron las siguentes: </p> 
+
+**def cantidad_filmaciones_mes( Mes ):** Se ingresa un mes en idioma Español y devuelvela cantidad de películas que fueron estrenadas en el mes consultado en la totalidad del dataset.
+</p>
+
+**def cantidad_filmaciones_dia( Dia ):** Se ingresa un día en idioma Español y devuelve la cantidad de películas que fueron estrenadas en día consultado en la totalidad del dataset.
+</p>
+
+**def score_titulo( titulo_de_la_filmación ):** Se ingresa el título de una filmación y devuelve el título, el año de estreno y el score.
+</p>
+
+**def votos_titulo( titulo_de_la_filmación ):** Se ingresa el título de una filmación y como respuesta se obtiene el título, la cantidad de votos y el valor promedio de las votaciones. Si la pelicula tiene menos de 2000 valoraciones devuelve un mensaje avisando que no cumple esta condición..
+  </p> 
+
+**def get_actor( nombre_actor ):** Se ingresa el nombre de un actor que se encuentre dentro de un dataset y devuelve el retorno total de las películas en las que ha participado, la cantidad de películas y el promedio de retorno.
+   </p> 
+
+**def get_director( nombre_director ):** Se ingresa el nombre de un director y devuelve el nombre de cada película con su fecha de lanzamiento, retorno individual, costo y ganancia de la misma.
+</p>
 
 **4. Segunda Limpieza de Datos:** </p>
 Con el fin de optimizar la data a correr en el modelo de recomendación, se realiza una segunda limpieza y transformación de los datos a utilizar: (Ver archivo **`2da Limpieza.ipynb`**  :eyes: ):</p>
