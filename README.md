@@ -13,7 +13,7 @@ Maria Isabel Arango ☑️
 ## Introducción:
 
 En este proyecto tomo el roll de **`Data Scientist`** en una start-up que provee servicios de agregación de plataformas de streaming. 
-Los datos no cuentan con la madurez necesaria por lo que, para poder realizar el proyecto, se requiere un trabajpásoo previo de limpieza y análisis.
+Los datos no cuentan con la madurez necesaria por lo que, para poder realizar el proyecto, se requiere un trabajo previo de limpieza y análisis.
 El objetivo de este proyecto es crear un modelo de recomendación de películas con la información suministrada.
 
 A continuación se explica el paso a paso del desarrollo de este proyecto.
