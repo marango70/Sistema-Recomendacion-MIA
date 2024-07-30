@@ -6,7 +6,7 @@ Sistema de Recomendación de Peliculas
 # Proyecto Individual 1
 Henry DataPT9 
 </p>
-Maria Isabel Arango
+Maria Isabel Arango ☑️ 
 </p>
 
 
@@ -21,7 +21,7 @@ A continuación se explica el paso a paso del desarrollo de este proyecto.
 ## Desarrollo:
 
 **1. Limpieza de Datos:** </p>
-   En este paso se realiza el cargue y un análisis inicial de datos de los dataset movies_dataset.csv y credits.csv, con el fin de limpiarlos y prepararlos para su uso. (Ver archivo **´Data_Engineering.ipyn´** :eyes: ).
+   En este paso se realiza el cargue y un análisis inicial de datos de los dataset movies_dataset.csv y credits.csv, con el fin de limpiarlos y prepararlos para su uso. (Ver archivo **`Data_Engineering.ipyn`** :eyes: ).
    </p>
    En el este notebook se carga la información de los 2 datasets: (data_movies.csv y data_credist.csv). </p>
    
@@ -60,7 +60,7 @@ A continuación se explica el paso a paso del desarrollo de este proyecto.
 
    
 **2. Analisis de Datos EDA:** </p>
-Se realiza un análisis gráfico y de las características de los datos de los datasets.(Ver archivo **´EDA.ipyn´** :eyes: ):   </p>
+Se realiza un análisis gráfico y de las características de los datos de los datasets.(Ver archivo **`EDA.ipyn`** :eyes: ):   </p>
 
 **a.** Cargar los archivos ya en formato parquet. data_movies.parquet y data_credits.parquet. </p>
 **b.** Revisar los datos de encabezado, la información de número de columnas, nombres de titulos y cantidad de información. </p>
@@ -73,23 +73,24 @@ Se realiza un análisis gráfico y de las características de los datos de los d
 **i** Se grafican algunas variables que son cadenas de texto en formato Nube de palabras. </p>
 
 **3. Desarrollo Consultas:** </p>
-Para desarrollar las consultas se realizó directamente en el archivo *´main.py´* con apoyo en el notebook. </p> 
+Para desarrollar las consultas se realizó directamente en el archivo **`main.py`**  con apoyo en el notebook. </p> 
 
 **4. Segunda Limpieza de Datos:** </p>
-Con el fin de optimizar la data a correr en el modelo de recomendación, se realiza una segunda limpieza y transformación de los datos a utilizar: (Ver archivo **´2da Limpieza.ipynb´** :eyes: ):</p>
+Con el fin de optimizar la data a correr en el modelo de recomendación, se realiza una segunda limpieza y transformación de los datos a utilizar: (Ver archivo **`2da Limpieza.ipynb`**  :eyes: ):</p>
 
 **a.** Se hace un drop de las columnas que definitivamente no se van a usar en las consultas y en el modelo de recomendación. </p>
 Para el dataset Movies: 'runtime', 'status', 'tagline', 'belongs_to_collection_id', 'belongs_to_collection_name', 'spoken_languages_1_iso', 'spoken_languaje_1_name', 'production_companies_1_name', 'production_companies_1_id', 'production_companies_2_name', 'production_companies_2_id', 'production_countries_1_iso','production_countries_1_name', 'genres_1_id', 'genres_2_id', 'genres_2_name', 'genres_3_id',y 'genres_3_name', 'budget','release_date', 'revenue', 'vote_count','return', 'retorno_US'.</p>
  
  Para el Dataset Credits: 'cast_name_2', 'cast_name_3','cast_name_4' 'cast_name_5', 'cast_name_6', 'cast_name_7', 'cast_name_8', 'cast_name_9', 'cast_name_10'. </p>
  
-**b.** Se hace un merge de los dos datasets en **´data´** . Se logra haciendo el vinculo con la columna id. </p>
+**b.** Se hace un merge de los dos datasets en **´data´**  . Se logra haciendo el vinculo con la columna id. </p>
 **c.** Se filtran los datos por año de lanzamiento (release_year) tomando unicamente las películas del año 2000 en adelante. </p>
 **d.** Se hace un nuevo tratamiento a las columnas con valores nulos a utilizar. </p>
 **e.** Se crea una nueva columna (texto _combinado) que contatena el texto de las columnas: overview, genere, actor principal, director e idioma original. </p>
 **f.** Vectorizo la columna (texto_combinado) </p>
 
-Finalmente, genero nuevamente los archivos parquet (:eyes: **`data_movies.parquet`** y **`data_credits.parquet`** :eyes:), más pequeños, para usar en las consultas ya desarrolladas anteriormente, pero con el objetivo de hacerlas más eficientes. </p> Para el modelo de recomendación se exporta el archivo **´data_filtrada.parquet´** 👀
+Finalmente, genero nuevamente los archivos parquet (:eyes: **`data_movies.parquet`** y **`data_credits.parquet`** :eyes:), más pequeños, para usar en las consultas ya desarrolladas anteriormente, pero con el objetivo de hacerlas más eficientes. </p> Para el modelo de recomendación se exporta el archivo **`data_filtrada.parquet`**  
+👀
 
 </p>
 
@@ -99,11 +100,15 @@ Para el modelo de recomendación se utilizó el algoritmo :electron: similitud d
 La similitud del coseno mide qué tan similares son dos elementos (en este caso peliculas) basándose en sus características. En lugar de mirar las diferencias directas entre características, se mide el ángulo entre dos vectores que representan estas características (features). Si el ángulo es pequeño (coseno cercano a 1), los elementos son muy similares; si el ángulo es grande (coseno cercano a 0), los elementos son menos similares.
 </p>
 
-Ver archivo **´Modelo Recomendación´** :eyes:
+Ver archivo **`Modelo Recomendación.ipynb`**  
+:eyes:
 </p>
 
 **6. Render y FastAPI:** </p>
+Para el proceso de desplegar la aplicación web con render y FastApi, incluye tener un archivo **`main.py`** donde se encuentra el código correspondiente a las consultas a usar en la aplicación, así como un archivo **`requirements.txt`** con todas las librerias necesarias para correr el código. :electron:
+Posteriormente se sube todo el código a un repositorio de GitHub. 
+Se crea un nuevo servicio web en Render (anteriormente se creo una cuenta perosnal en esta web), y se conecta al repositorio. 
+Se configura y despliega.
 
-☑️ 🏁 
+🏁 🏁  🏁 🏁 🏁 🏁 🏁 🏁 🏁 🏁 🏁 
  :smirk:
- :eyes:
