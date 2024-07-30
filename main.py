@@ -291,82 +291,6 @@ async def votos_titulo(titulo_filmacion: str):
         "votos_promedio": prom_votos
     }
 
-# M O D E L O   D E   R E C O M E N D A C I O N #
-
-
-# Librerias
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.decomposition import PCA
-
-#Instancio la App de FastAPI
-app = FastAPI()
-
-# Función que carga los datos desde un archivo Parquet
-def cargar_datos():
-    df_data_filtrada = pd.read_parquet('data_filtrada.parquet', engine='fastparquet')
-    return df_data_filtrada
-
-#Cargo los Datos
-data_filtrada = cargar_datos()
-
-#  vectorizo la información de texto
-tfidf = TfidfVectorizer(stop_words='english')    #Instancio
-tfidf_matrix = tfidf.fit_transform(data_filtrada['texto_combinado'])  #vectorizo
-
-# Estandarizo los datos numericos a usar:
-scaler = StandardScaler()  #Instancio 
-data_filtrada[['popularity','release_year']] = scaler.fit_transform(data_filtrada[['popularity', 'release_year']]) #escalo
-
-#Creo una matrix total uniendo las catacteristicas categóricas más las numéricas.
-matrix_total = np.hstack((tfidf_matrix.toarray(), data_filtrada[['popularity', 'release_year']].values))
-
-# Configuro el número de componentes principales
-n_components = 50  # Ajusta según tu caso específico
-
-# PCA para reducir la dimensionalidad
-pca = PCA(n_components=n_components)
-matrix_reduced = pca.fit_transform(matrix_total)
-
-# Calcula la matriz de similitud con la matriz reducida
-similarity_matrix = cosine_similarity(matrix_reduced, matrix_reduced)
-
-#Decorador_
-@app.get("/recomendacion")
-
-#Consulta
-async def recomendacion(titulo: str):
-    try:
-        idx_list = data_filtrada.index[data_filtrada['title'] == titulo].tolist()
-        
-        if not idx_list:
-            raise HTTPException(status_code=404, detail="Película no encontrada")
-        
-        idx = idx_list[0]
-        
-        print('Titulo de la Película:', titulo)  # Log de depuración
-        print('Índice:', idx)  # Log de depuración
-        print('Tipo de índice:', type(idx))
-
-        # Obtengo los pares de películas índice y score
-        similarity_score = list(enumerate(similarity_matrix[idx]))
-
-        # Ordeno las películas por puntaje de similitud
-        similarity_score = sorted(similarity_score, key=lambda x: x[1], reverse=True)
-
-        # Tomo los índices de las 5 películas similares. Quito la primera [0] que es la misma dada
-        similar_movies_indices = [i[0] for i in similarity_score[1:6]]
-
-        recomendadas = data_filtrada['title'].iloc[similar_movies_indices].tolist()
-    
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error interno: {str(e)}")
-    
-    return {'Recomendaciones': recomendadas}
-
-
-# F I N
 
 if __name__ == "__main__":
     import uvicorn
@@ -378,9 +302,5 @@ if __name__ == "__main__":
 # http://127.0.0.1:8000/get_actor?actor=robin%20williams
 # http://127.0.0.1:8000/get_director?director=forest%20whitaker
 # http://127.0.0.1:8000/votos_titulo?titulo_filmacion=mom
-# http://127.0.0.1:8000/recomendacion?titulo=two%20friends
-
-
-
 
 # uvicorn main:app --reload --port 8000
